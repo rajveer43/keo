@@ -1,0 +1,18 @@
+# Smoke test: GloVe-100 subset, tiny grid, CPU only, must finish in < 5 minutes (Phase 6 gate).
+# o-means uses cell_size 8 here (k=512 with the default 128 would give nlist = nprobe = 16 = exact search; A42).
+name: smoke
+dataset: glove100
+n: [50000]
+k: [512]
+seeds: [0, 1]
+baseline_iterations: 25
+warmup: true
+train_eval_subset: null
+runs:
+  - {algo: lloyd,  backend: reference, budgets: [1, 2, 3, 5, 10, 25]}
+  - {algo: emeans, backend: reference, budgets: [1, 2]}
+  - {algo: omeans, backend: reference, budgets: [1, 2], params: {cell_size: 8}}
+  # official implementations: run when available, otherwise listed in skipped.json with the reason
+  - {algo: lloyd,  backend: official,  budgets: [25]}
+  - {algo: emeans, backend: official,  budgets: [1, 2]}
+  - {algo: omeans, backend: official,  budgets: [1, 2]}

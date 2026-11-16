@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 200" width="600" height="200" role="img" aria-labelledby="t d">
+  <title id="t">KEO logo</title>
+  <desc id="d">A ninja cat wearing an eye mask above three small clusters of dots, next to the letters K, E and O in blue, orange and green.</desc>
+  <defs>
+    <clipPath id="head">
+      <path d="M44 28 L84 54 Q100 50 116 54 L156 28 L162 88 Q162 132 100 138 Q38 132 38 88 Z"/>
+    </clipPath>
+  </defs>
+
+  <!-- plate: dark so the logo reads on light and dark pages -->
+  <rect width="600" height="200" rx="44" fill="#1a1a19"/>
+
+  <!-- ninja cat -->
+  <path d="M44 28 L84 54 Q100 50 116 54 L156 28 L162 88 Q162 132 100 138 Q38 132 38 88 Z" fill="#efeeea"/>
+  <path d="M52 40 L76 56 L56 66 Z M148 40 L124 56 L144 66 Z" fill="#d9d7d0"/>
+  <rect x="30" y="70" width="140" height="28" fill="#26262a" clip-path="url(#head)"/>
+  <path d="M58 84 Q72 73 86 84 Q72 95 58 84 Z M114 84 Q128 73 142 84 Q128 95 114 84 Z" fill="#fcfcfb"/>
+  <ellipse cx="72" cy="84" rx="2.6" ry="7" fill="#1a1a19"/>
+  <ellipse cx="128" cy="84" rx="2.6" ry="7" fill="#1a1a19"/>
+  <path d="M94 106 L106 106 L100 113 Z" fill="#eb6834"/>
+  <g fill="none" stroke="#1a1a19" stroke-width="2" stroke-linecap="round">
+    <path d="M100 113 Q100 121 92 121 M100 113 Q100 121 108 121"/>
+    <path d="M52 110 L78 112 M52 120 L78 117 M148 110 L122 112 M148 120 L122 117" stroke="#8a8984" stroke-width="1.6"/>
+  </g>
+
+  <!-- three clusters: centroid ring + member points -->
+  <g stroke-width="2" fill="none">
+    <circle cx="52" cy="168" r="6" stroke="#3987e5"/>
+    <circle cx="100" cy="168" r="6" stroke="#d95926"/>
+    <circle cx="148" cy="168" r="6" stroke="#199e70"/>
+  </g>
+  <g fill="#3987e5"><circle cx="40" cy="163" r="2.8"/><circle cx="63" cy="161" r="2.8"/><circle cx="46" cy="177" r="2.8"/><circle cx="62" cy="176" r="2.8"/></g>
+  <g fill="#d95926"><circle cx="88" cy="163" r="2.8"/><circle cx="111" cy="161" r="2.8"/><circle cx="94" cy="177" r="2.8"/><circle cx="110" cy="176" r="2.8"/></g>
+  <g fill="#199e70"><circle cx="136" cy="163" r="2.8"/><circle cx="159" cy="161" r="2.8"/><circle cx="142" cy="177" r="2.8"/><circle cx="158" cy="176" r="2.8"/></g>
+
+  <!-- K E O: one colour per algorithm, drawn as paths so no font is needed -->
+  <g transform="translate(20 0)" fill="none" stroke-width="16" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M246 52 V148 M298 52 L246 100 L300 148" stroke="#3987e5"/>
+    <path d="M388 52 H340 V148 H388 M340 100 H378" stroke="#d95926"/>
+    <circle cx="466" cy="100" r="48" stroke="#199e70"/>
+  </g>
+</svg>

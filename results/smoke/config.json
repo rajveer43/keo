@@ -1,0 +1,86 @@
+{
+  "name": "smoke",
+  "dataset": "glove100",
+  "normalize": null,
+  "n": [
+    50000
+  ],
+  "k": [
+    512
+  ],
+  "seeds": [
+    0,
+    1
+  ],
+  "baseline_iterations": 25,
+  "train_eval_subset": null,
+  "threads": null,
+  "warmup": true,
+  "runs": [
+    {
+      "algo": "lloyd",
+      "backend": "reference",
+      "budgets": [
+        1,
+        2,
+        3,
+        5,
+        10,
+        25
+      ],
+      "params": {},
+      "adapter": null
+    },
+    {
+      "algo": "emeans",
+      "backend": "reference",
+      "budgets": [
+        1.0,
+        2.0
+      ],
+      "params": {},
+      "adapter": null
+    },
+    {
+      "algo": "omeans",
+      "backend": "reference",
+      "budgets": [
+        1.0,
+        2.0
+      ],
+      "params": {
+        "cell_size": 8
+      },
+      "adapter": null
+    },
+    {
+      "algo": "lloyd",
+      "backend": "official",
+      "budgets": [
+        25
+      ],
+      "params": {},
+      "adapter": "faiss_lloyd_cpu"
+    },
+    {
+      "algo": "emeans",
+      "backend": "official",
+      "budgets": [
+        1.0,
+        2.0
+      ],
+      "params": {},
+      "adapter": "official_emeans_cpu"
+    },
+    {
+      "algo": "omeans",
+      "backend": "official",
+      "budgets": [
+        1.0,
+        2.0
+      ],
+      "params": {},
+      "adapter": "official_omeans"
+    }
+  ]
+}

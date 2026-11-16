@@ -1,0 +1,25 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/
+.DS_Store
+
+# documentation and source papers: kept locally, not committed
+/docs/
+
+# data files: downloaded datasets and stored result rows (large / regenerable)
+/data/
+*.hdf5
+*.h5
+*.npy
+*.npz
+*.parquet
+results/**/rows/
+results/cache/
+RELEASING.md
+

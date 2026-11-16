@@ -1,0 +1,25 @@
+# Track A (primary) dataset. Not used by either source paper (see README section 2).
+name: glove100
+description: GloVe-100 word embeddings (ann-benchmarks, angular)
+source:
+  type: url
+  url: http://ann-benchmarks.com/glove-100-angular.hdf5
+  filename: glove-100-angular.hdf5
+  format: hdf5
+  train_key: train
+  eval_key: test
+  # Trust-on-first-use: ann-benchmarks publishes no checksum. Pinned from the first download
+  # on 2026-11-16 (see docs/ASSUMPTIONS.md A31). Empty string = not pinned yet.
+  sha256: "544af1d5e84e112cd4749571dcfd8ca109818a572f850af75a3a09e093a953c4"
+  expected_bytes: 485413888
+d: 100
+n_train: 1183514
+n_eval: 10000
+normalize: true          # L2-normalise (A24); verified/decided after `keo data-info`
+split:
+  val_fraction: 0.5      # provided queries -> val/test (A25)
+  seed: 0
+# Experiment defaults (consumed from Phase 6 on)
+k_grid: [4096, 16384, 32768]
+n_subset_grid: [100000, 300000, 1000000, null]   # null = full train
+min_points_per_cluster: 8                        # keep n/k >= 8 [E App. B.1]

@@ -1,0 +1,7 @@
+[
+  {
+    "reason": "adapter unavailable: faiss.contrib.o_means is not in the installed faiss (1.16.0): it lives in the o-means authors' fork (no public URL found); needs CUDA",
+    "algo": "omeans",
+    "adapter": "official_omeans"
+  }
+]

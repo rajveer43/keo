@@ -1,0 +1,20 @@
+parity: n=300000 k=16384 d=100 same init, 3 seeds; rel. TEST/TRAIN MSE of the reference vs the official implementation
+  seed 0 T=2 done (25s)
+  seed 0 T=3 done (64s)
+  seed 1 T=2 done (88s)
+  seed 1 T=3 done (120s)
+  seed 2 T=2 done (144s)
+  seed 2 T=3 done (176s)
+
+=== medians over seeds [min, max]  (reference minus official, relative) ===
+  T=2 ref[official recipe] test  MSE vs official:  +0.180%  [+0.014%, +0.232%]
+  T=2 ref[official recipe] train MSE vs official:  +0.253%  [+0.219%, +0.256%]
+  T=2 (official B, alpha0, ref B, alpha0, official updates, ref updates, official revived, ref revived): (16384, 0.1858, 16384, 0.1858, 38, 36, 19943, 19791)
+  T=2 ref[paper recipe] test  MSE vs official:  +0.178%  [-0.103%, +0.253%]
+  T=2 ref[paper recipe] train MSE vs official:  +0.261%  [+0.195%, +0.279%]
+  T=3 ref[official recipe] test  MSE vs official:  +0.029%  [-0.010%, +0.121%]
+  T=3 ref[official recipe] train MSE vs official:  +0.215%  [+0.204%, +0.220%]
+  T=3 (official B, alpha0, ref B, alpha0, official updates, ref updates, official revived, ref revived): (16384, 0.178, 16384, 0.178, 57, 54, 21252, 21085)
+  T=3 ref[paper recipe] test  MSE vs official:  +0.076%  [+0.018%, +0.080%]
+  T=3 ref[paper recipe] train MSE vs official:  +0.180%  [+0.152%, +0.208%]
+total 176s
