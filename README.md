@@ -10,6 +10,7 @@
   <a href="https://pypi.org/project/keo/"><img alt="Python versions" src="https://img.shields.io/pypi/pyversions/keo?logo=python&logoColor=white"></a>
   <a href="https://github.com/rajveer43/keo/actions/workflows/ci.yml"><img alt="Tests" src="https://github.com/rajveer43/keo/actions/workflows/ci.yml/badge.svg"></a>
   <a href="https://github.com/rajveer43/keo/blob/main/LICENSE"><img alt="License: MIT" src="https://img.shields.io/pypi/l/keo"></a>
+  <a href="https://doi.org/10.5281/zenodo.24273473"><img alt="DOI" src="https://zenodo.org/badge/DOI/10.5281/zenodo.24273473.svg"></a>
   <img alt="Developed on Apple Silicon" src="https://img.shields.io/badge/developed%20on-Apple%20Silicon-lightgrey?logo=apple&logoColor=white">
 </p>
 
