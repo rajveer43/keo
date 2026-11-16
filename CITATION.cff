@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+message: "If you use KEO, please cite it using the metadata below."
+title: "KEO: a reproducible benchmark of k-means, e-means and o-means"
+abstract: >-
+  KEO compares k-means (Lloyd), e-means and o-means, three large-scale
+  clustering algorithms, under one protocol, one set of metrics and one result
+  store, and tests whether the headline claims of the e-means and o-means
+  papers hold on a dataset neither paper evaluated (GloVe-100).
+type: software
+authors:
+  - family-names: "Rathod"
+    given-names: "Rajveer"
+doi: "10.5281/zenodo.24273473"
+repository-code: "https://github.com/rajveer43/keo"
+url: "https://pypi.org/project/keo/"
+license: MIT
+keywords:
+  - clustering
+  - k-means
+  - e-means
+  - o-means
+  - benchmark
+  - machine learning
+  - Faiss
