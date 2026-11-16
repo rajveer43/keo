@@ -1,166 +1,348 @@
-<p align="center">
-  <img src="https://raw.githubusercontent.com/rajveer43/keo/main/assets/logo.svg" alt="KEO logo: a ninja cat above three clusters of dots, next to the letters K, E, O" width="420">
-</p>
-
 # KEO
 
-**A reproducible benchmark of k-means, e-means and o-means on data neither method was evaluated on.**
+<p align="center">
+  <img src="https://raw.githubusercontent.com/rajveer43/keo/main/assets/logo.svg" alt="KEO logo" width="360">
+</p>
 
-**What KEO stands for.** KEO is named after Keo, the ninja cat from the *Ninja Hattori* cartoon series, and it spells out the three clustering algorithms the framework compares: **K**-means, **E**-means and **O**-means. In the logo, the masked ninja cat stands over three clusters of points, each with its centroid ringed, and the letters K, E and O use one colour per algorithm, the same colours as every figure.
+<p align="center">
+  <a href="https://pypi.org/project/keo/"><img alt="PyPI version" src="https://img.shields.io/pypi/v/keo?logo=pypi&logoColor=white"></a>
+  <a href="https://pypi.org/project/keo/"><img alt="Monthly downloads" src="https://img.shields.io/pypi/dm/keo?logo=pypi&logoColor=white"></a>
+  <a href="https://pypi.org/project/keo/"><img alt="Python versions" src="https://img.shields.io/pypi/pyversions/keo?logo=python&logoColor=white"></a>
+  <a href="https://github.com/rajveer43/keo/actions/workflows/ci.yml"><img alt="Tests" src="https://github.com/rajveer43/keo/actions/workflows/ci.yml/badge.svg"></a>
+  <a href="https://github.com/rajveer43/keo/blob/main/LICENSE"><img alt="License: MIT" src="https://img.shields.io/pypi/l/keo"></a>
+  <img alt="Developed on Apple Silicon" src="https://img.shields.io/badge/developed%20on-Apple%20Silicon-lightgrey?logo=apple&logoColor=white">
+</p>
 
-KEO compares three large-scale clustering algorithms under one protocol, one set of metrics and one result store, and tests whether the headline claims of the e-means and o-means papers hold outside the datasets they were developed on.
+**A reproducible evaluation of k-means, e-means, and o-means on an independent dataset.**
 
-| | Algorithm | Summary | Source |
-|---|---|---|---|
-| **K** | k-means (Lloyd) | Full-batch alternation of exact assignment and centroid mean update. | Lloyd (1982) |
-| **E** | e-means | Mini-batch k-means with exponential-moving-average updates, a cosine step schedule, scaling laws for batch size and step size, and dead-cluster revival. Reported to match Lloyd in a fraction of the epochs. | Bessa et al., Meta FAIR, 2026 |
-| **O** | o-means | e-means with a two-level inverted-file index built over the centroids, so each point is compared with a small subset of them instead of all `k`. | Bajaj, Nupur, Garg, 2026 |
+KEO is an experimental benchmarking framework for evaluating three large-scale clustering algorithms under a unified experimental protocol. It provides consistent implementations, evaluation metrics, experiment tracking, and result generation to investigate whether the performance improvements reported by recent e-means and o-means research generalize to datasets outside their original evaluations.
 
-## Contents
+The goal is not to establish another leaderboard, but to conduct a controlled and reproducible investigation of algorithmic performance, computational cost, and practical limitations.
 
-- [Research question](#research-question)
-- [Dataset](#dataset)
-- [Installation](#installation)
-- [Quick start](#quick-start)
-- [Method](#method)
-- [Project status](#project-status)
-- [Limitations](#limitations)
-- [Documentation](#documentation)
-- [Repository layout](#repository-layout)
-- [References](#references)
+## Research motivation
+
+Recent work has proposed improvements to traditional k-means clustering:
+
+- **k-means:** The classical Lloyd algorithm, serving as the baseline.
+- **e-means:** A mini-batch approach using exponential moving average updates and adaptive optimization strategies, reported to achieve comparable clustering quality in substantially fewer epochs.
+- **o-means:** An extension of e-means that uses an inverted-file index over centroids to reduce assignment costs as the number of clusters increases.
+
+KEO evaluates these approaches using the same dataset, initialization, evaluation metrics, and experiment-tracking infrastructure.
+
+| Algorithm | Approach | Reference |
+|---|---|---|
+| **K — k-means** | Lloyd's algorithm with exact assignment and centroid updates. | Lloyd (1982) |
+| **E — e-means** | Mini-batch k-means with EMA updates, cosine step scheduling, scaling laws, and dead-cluster revival. | Bessa et al. (2026) |
+| **O — o-means** | e-means with a two-level inverted-file index over centroids to reduce assignment comparisons. | Bajaj, Nupur, Garg (2026) |
 
 ## Research question
 
-Do the reported gains of e-means (matching k-means quality in roughly 1.4–2.6 epochs) and o-means (further reducing assignment cost as `k` grows) hold on a dataset that was not used to design or tune them, and under what conditions do they break down?
+The central research question is:
+
+**Do the reported improvements of e-means and o-means generalize to datasets that were not used to develop or tune these algorithms?**
+
+Specifically, KEO investigates:
+
+- Whether e-means can achieve k-means-level clustering quality in approximately 1.4–2.6 epochs.
+- Whether o-means reduces assignment costs as the number of clusters increases.
+- How clustering quality, computational cost, and cluster stability change across experimental configurations.
+- Under what conditions these algorithms fail to deliver their expected improvements.
 
 ## Dataset
 
-**GloVe-100**: 1,183,514 word vectors in 100 dimensions, with 10,000 provided query vectors, taken from ANN-Benchmarks (`glove-100-angular`). It appears in neither paper's list of evaluation datasets (checked against those two papers only). Vectors are L2-normalised by default. The download is checksum-verified (SHA-256).
+### GloVe-100
+
+KEO currently uses the GloVe-100 dataset from [ANN-Benchmarks](https://ann-benchmarks.com/).
+
+| Property | Value |
+|---|---|
+| Dataset | GloVe-100 |
+| Number of vectors | 1,183,514 |
+| Dimensions | 100 |
+| Query vectors | 10,000 |
+| Source | ANN-Benchmarks |
+| Configuration | `glove-100-angular` |
+| Preprocessing | L2 normalization |
+| Integrity verification | SHA-256 checksum |
+
+The dataset was selected because it does not appear in the evaluation dataset lists of either the e-means or o-means papers, based on the papers and project materials examined for this study.
+
+The dataset is downloaded automatically and verified using its SHA-256 checksum.
 
 ## Installation
 
-Requires Python 3.10 or newer (developed and tested on 3.12).
+### Requirements
+
+- Python 3.10 or newer
+- Python 3.12 recommended for the development environment
+
+Install KEO using pip:
 
 ```bash
 pip install keo
 ```
 
-To work on the code, clone the repository and use [uv](https://docs.astral.sh/uv/):
+### Development installation
+
+Clone the repository and install dependencies using [uv](https://docs.astral.sh/uv/):
 
 ```bash
 git clone https://github.com/rajveer43/keo.git
 cd keo
+
 uv sync
 ```
 
 ## Quick start
 
+Run your first experiment:
+
 ```bash
-keo download glove100     # ~460 MB, checksum-verified
-keo smoke                 # end-to-end run on a small subset, about 10 seconds
-keo figures smoke         # figures in results/smoke/figures/
-keo adapters              # which official implementations can run on this machine
+# Download the GloVe-100 dataset (~460 MB)
+keo download glove100
+
+# Run an end-to-end smoke test
+keo smoke
+
+# Generate figures from the smoke experiment
+keo figures smoke
+
+# Check available official implementations
+keo adapters
 ```
 
-From a source checkout, prefix commands with `uv run` and run the tests with `uv run pytest`.
+The smoke experiment runs on a small subset of the dataset and takes approximately 10 seconds.
 
-Where files go: in a source checkout, `data/` and `results/` sit next to the code. After `pip install`, datasets are cached in `~/.cache/keo/data` and results are written to `./results` in the directory you run from. Set `KEO_DATA_DIR`, `KEO_RESULTS_DIR` or `KEO_CONFIGS_DIR` to override.
+### Running experiments
 
-Run a configured experiment, or preview it first:
+Preview an experiment before execution:
 
 ```bash
 keo run <name-or-path.yaml> --dry-run
+```
+
+Execute the experiment:
+
+```bash
 keo run <name-or-path.yaml>
+```
+
+Inspect experiment progress:
+
+```bash
 keo status <name>
+```
+
+Generate figures:
+
+```bash
 keo figures <name> --theme both
 ```
 
-Each result cell is stored under a content hash of its configuration, so an interrupted run resumes where it stopped and completed cells are never recomputed.
+From a source checkout, prefix commands with `uv run`. For example:
 
-## Method
+```bash
+uv run keo smoke
+uv run pytest
+```
 
-**Two implementations, never mixed.** Every algorithm exists twice:
+### Data and results
 
-- `reference`: our own PyTorch (CPU) implementation, written from the papers.
-- `official`: the authors' released code (Faiss `contrib/e_means` and related adapters), run in an isolated worker process.
+KEO uses configurable directories for datasets, results, and experiment configurations.
 
-Each result row records which one produced it. Quality is compared across both; wall-clock time is compared only within one implementation.
+| Environment variable | Purpose |
+|---|---|
+| `KEO_DATA_DIR` | Dataset storage |
+| `KEO_RESULTS_DIR` | Experiment results |
+| `KEO_CONFIGS_DIR` | Experiment configurations |
 
-**Metrics.**
+By default:
 
-- MSE: mean squared L2 distance to the assigned centroid, computed with exact assignment in float64, on both training and held-out points.
-- Relative MSE (the *gap*): error relative to k-means run for 25 iterations from the same starting centroids and seed.
-- Cluster health: dead clusters (fewer than 10 points), empty clusters, and the Faiss imbalance factor.
-- Cost: counted distance computations, split into assignment and index maintenance, reported both as actually performed and as the nominal cell arithmetic. This is hardware independent.
-- Wall-clock fit time, within one implementation only.
+- Source installations use `data/` and `results/` within the repository.
+- Installed packages cache datasets in `~/.cache/keo/data`.
+- Results are written to `./results` relative to the current working directory.
 
-**e-means recipe.** `recipe="official"` (default) uses the constants shipped in the official code; `recipe="paper"` uses the values in the paper text. The two differ slightly. All headline results use `official`.
+## Methodology
 
-**Figures.** Six figures are generated from the stored result rows, each with a CSV of exactly the plotted numbers and a light and dark variant. Headlines are computed from the data rather than written by hand. See [docs/FIGURES.md](docs/FIGURES.md).
+### Implementation strategy
+
+Each algorithm is evaluated through two separate implementations.
+
+**1. Reference implementation**
+
+Our own PyTorch CPU implementations, developed from the corresponding research papers.
+
+**2. Official implementation**
+
+The authors' released implementations, accessed through isolated worker processes and adapters, including Faiss `contrib/e_means`.
+
+These implementations are never mixed within an experiment. Every result records its implementation provenance.
+
+Clustering quality is compared across implementations. Wall-clock execution time is compared only within the same implementation to avoid misleading performance comparisons.
+
+### Evaluation metrics
+
+KEO tracks the following metrics:
+
+| Metric | Description |
+|---|---|
+| MSE | Mean squared L2 distance to the assigned centroid, evaluated on training and held-out points. |
+| Relative MSE (Gap) | Error relative to k-means run for 25 iterations from the same initialization and random seed. |
+| Cluster health | Dead clusters, empty clusters, and Faiss imbalance factor. |
+| Computational cost | Distance computations for assignment and index maintenance. |
+| Wall-clock time | Fitting time, compared within the same implementation. |
+
+MSE is computed using exact assignment in float64 precision on both training and held-out points.
+
+Computational cost is reported in two forms:
+
+- Actual distance computations performed.
+- Nominal cell arithmetic.
+
+This provides a hardware-independent perspective on algorithmic complexity.
+
+### e-means configurations
+
+KEO supports two e-means recipes:
+
+- `official`: Uses the constants provided by the official implementation. This is the default configuration.
+- `paper`: Uses the values specified in the research paper.
+
+The two configurations differ slightly. All headline evaluations use the official recipe.
+
+### Reproducibility and experiment tracking
+
+Reproducibility is a central design principle of KEO.
+
+Each experiment result is associated with a content hash derived from its configuration.
+
+This provides several benefits:
+
+- Experiments can resume after interruption.
+- Previously completed result cells are not recomputed.
+- Configuration provenance is preserved.
+- Results remain traceable to their corresponding experimental settings.
+
+### Figures and reporting
+
+KEO generates six figures directly from stored experiment results.
+
+Each figure includes:
+
+- A corresponding CSV containing the exact plotted values.
+- Light and dark theme variants.
+- Data-driven headline calculations.
+
+No headline metrics are manually entered into the figures.
 
 ## Project status
 
-| Phase | Scope | State |
+KEO is under active development. The experimental infrastructure and core algorithm implementations are complete, while the main benchmark and analysis phases remain in progress.
+
+| Phase | Scope | Status |
 |---|---|---|
-| 0–2 | Specification, data pipeline, metrics, k-means | Complete |
+| 0–2 | Specification, dataset pipeline, metrics, k-means | Complete |
 | 3–4 | e-means and o-means reference implementations | Complete |
-| 5 | Adapters for the official implementations | Complete |
-| 6 | Result store, resumable runner, figures | Complete |
-| 7 | Main run on the full grid | Not started |
-| 8 | Analysis and report (`keo analyze`, `keo report`) | Not started; commands are stubs |
-| 9 | Ablations, scaling-law transfer, secondary track | Not started |
+| 5 | Official implementation adapters | Complete |
+| 6 | Result storage, resumable execution, figure generation | Complete |
+| 7 | Full benchmark grid | Not started |
+| 8 | Analysis and report generation | Not started |
+| 9 | Ablations, scaling-law transfer, secondary experiments | Not started |
 | 10 | Hardening and packaging | Not started |
 
-The test suite has 179 tests, all passing. The `smoke` experiment (26 cells) runs cleanly end to end.
+### Current validation
 
-**Implementation agreement.** On GloVe subsets, our e-means matches the official implementation within about 0.2% on held-out error. The remainder is most likely remainder-batch handling (see assumptions A2 and A52 in [docs/ASSUMPTIONS.md](docs/ASSUMPTIONS.md)); this has not been isolated.
+- 179 automated tests passing on the development machine.
+- Smoke experiment covering 26 experimental cells.
+- Successful end-to-end execution of the smoke pipeline.
+- GitHub Actions CI badge tracks the latest Linux test run.
 
-**No benchmark results are claimed yet.** Numbers visible in `results/smoke/` come from two repeats at `k = 512` and exist to verify the pipeline, not to answer the research question.
+### Implementation agreement
+
+On GloVe subsets, the reference e-means implementation matches the official implementation within approximately 0.2% on held-out error.
+
+The remaining difference is suspected to be related to remainder-batch handling, but this has not yet been isolated.
+
+**Important: No benchmark conclusions are claimed yet.**
+
+Results currently available in `results/smoke/` are based on two repetitions at `k = 512`. They validate the experimental pipeline and should not be interpreted as answers to the research question.
 
 ## Limitations
 
-- **o-means is partly reconstructed.** Its paper is unreleased, so our version is built from the project page and every unspecified detail is a recorded assumption. Conclusions about o-means describe this reconstruction.
-- **No GPU in the reference environment.** Wall-clock claims from the papers concern GPU execution and cannot be tested on the development machine (Apple M4, CPU only). Quality and operation counts can be.
-- **CPU time is not representative for o-means.** Index maintenance is cheap on a GPU and relatively costly on a CPU, so CPU wall-clock should not be read as a verdict on the method.
-- **One dataset so far.** Findings are about GloVe-100 and will not necessarily transfer.
-- **Dataset novelty is a bounded claim.** GloVe-100 was checked against the two papers' dataset lists, not against all prior work.
+The current evaluation has several limitations that should be considered when interpreting its results.
 
-## License
+**1. o-means reconstruction**
 
-Code is released under the [MIT License](LICENSE). The GloVe vectors are not redistributed; they are downloaded from ANN-Benchmarks and remain under their own terms.
+The o-means paper has not been released. Its implementation is reconstructed using the available project page, with unspecified details documented as explicit assumptions. Conclusions about o-means therefore apply to this reconstruction.
 
-## Documentation
+**2. Hardware limitations**
 
-| File | Contents |
-|---|---|
-| [docs/SPEC.md](docs/SPEC.md) | Algorithms, formulas and experimental protocol, tied to the source papers |
-| [docs/ASSUMPTIONS.md](docs/ASSUMPTIONS.md) | Register of every point where the papers were silent, and the decision taken |
-| [docs/FIGURES.md](docs/FIGURES.md) | What each figure answers, how it is built, and the palette validation record |
-| [docs/MASTER_PROMPT.md](docs/MASTER_PROMPT.md) | The original build brief (archived; has since diverged) |
+The reference development environment uses an Apple M4 CPU without GPU execution for the reference implementations. GPU performance claims from the original papers cannot currently be reproduced in this environment.
 
-`docs/` is excluded from version control (see `.gitignore`) and is kept locally.
+Clustering quality and computational operation counts can still be evaluated.
 
-## Repository layout
+**3. CPU timing limitations**
 
-```
-configs/         Dataset and experiment definitions (YAML)
-src/keo/
-  algos/         k-means, e-means, o-means, scaling laws, revival, IVF cells; adapters/ for official code
-  bench/         Experiment schema, resumable runner, result store, provenance
-  metrics/       MSE, gap, cluster health, operation counting
-  analysis/      Figure generation
-  data/          Download, verification, preparation
-tests/           Unit tests and per-phase gate tests
-results/         Run outputs (smoke, exploratory)
-docs/            Specification, assumptions, figure guide (local only)
+Index maintenance in o-means may have different performance characteristics on GPUs and CPUs. Consequently, CPU wall-clock measurements should not be treated as a definitive assessment of the algorithm's performance.
+
+**4. Dataset coverage**
+
+The current evaluation uses only GloVe-100. Results may not generalize to other datasets, dimensionalities, or data distributions.
+
+**5. Dataset novelty**
+
+The claim that GloVe-100 is an independent evaluation dataset is bounded to the dataset lists examined in the two papers. It is not a claim that the dataset has never been used in previous clustering research.
+
+## Repository structure
+
+```text
+keo/
+├── configs/              # Dataset and experiment configurations
+├── src/
+│   └── keo/
+│       ├── algos/        # k-means, e-means, o-means
+│       │   └── adapters/ # Official implementation adapters
+│       ├── bench/        # Experiment runner and result storage
+│       ├── metrics/      # Evaluation metrics and operation counting
+│       ├── analysis/     # Figure generation and analysis
+│       └── data/         # Download, verification, preparation
+├── tests/                # Unit and phase-gate tests
+├── results/              # Experiment outputs
+└── LICENSE
 ```
 
 ## References
 
-- **e-means**: Bessa et al., *e-means: outperforming k-means (in one-tenth the epochs)*. [arXiv:2611.09501](https://arxiv.org/abs/2611.09501) · [project page](https://e-means.github.io) · code in Faiss `contrib/e_means`
-- **o-means**: Bajaj, Nupur, Garg, *o-means: index the centroids, don't scan them*. Project page, November 2026; paper not yet released.
-- **Flash-KMeans** (GPU k-means baseline): [arXiv:2603.09229](https://arxiv.org/abs/2603.09229)
-- **Faiss**: Douze et al., *The Faiss library*. [arXiv:2401.08281](https://arxiv.org/abs/2401.08281)
-- **VQ-VAE** (origin of the moving-average update): van den Oord et al. [arXiv:1711.00937](https://arxiv.org/abs/1711.00937)
-- **ANN-Benchmarks**: Aumüller et al. [arXiv:1807.05614](https://arxiv.org/abs/1807.05614) · **GloVe**: Pennington et al. [nlp.stanford.edu/projects/glove](https://nlp.stanford.edu/projects/glove/) · **VIBE**: [arXiv:2505.17810](https://arxiv.org/abs/2505.17810)
-- **Classics**: Lloyd (1982); Arthur and Vassilvitskii, *k-means++* (2007); Sculley, *Web-scale k-means clustering* (2010)
+### Clustering algorithms
+
+- **e-means:** Bessa et al. (2026). *e-means: Outperforming k-means (in one-tenth the epochs).* [Paper](https://arxiv.org/abs/2611.09501) · [Project page](https://e-means.github.io)
+- **o-means:** Bajaj, Nupur, Garg (2026). *o-means: Index the centroids, don't scan them.* Project page, November 2026. Paper not yet released.
+- **Flash-KMeans:** GPU k-means baseline. [arXiv:2603.09229](https://arxiv.org/abs/2603.09229)
+- **Faiss:** Douze et al. (2024). [arXiv:2401.08281](https://arxiv.org/abs/2401.08281)
+
+### Related research
+
+- **VQ-VAE:** van den Oord et al. (2017). [arXiv:1711.00937](https://arxiv.org/abs/1711.00937)
+- **ANN-Benchmarks:** Aumüller et al. (2018). [arXiv:1807.05614](https://arxiv.org/abs/1807.05614)
+- **GloVe:** Pennington et al. [Project page](https://nlp.stanford.edu/projects/glove/)
+- **VIBE:** [arXiv:2505.17810](https://arxiv.org/abs/2505.17810)
+
+### Classical foundations
+
+- Lloyd (1982). *Least squares quantization in PCM.*
+- Arthur and Vassilvitskii (2007). *k-means++: The advantages of careful seeding.*
+- Sculley (2010). *Web-scale k-means clustering.*
+
+## License
+
+KEO is released under the [MIT License](https://github.com/rajveer43/keo/blob/main/LICENSE).
+
+The GloVe vectors are not redistributed with the package. They are downloaded from ANN-Benchmarks and remain subject to their respective terms.
+
+---
+
+<p align="center">
+  <b>KEO — Reproducible clustering research.</b>
+  <br>
+  Built for transparent, controlled, and reproducible evaluation.
+</p>
