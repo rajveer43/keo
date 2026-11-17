@@ -19,7 +19,7 @@ For anything larger than a small fix, please open an issue first so we can agree
 
 ## Development setup
 
-You need Python 3.10 or newer and [uv](https://docs.astral.sh/uv/).
+You need Python 3.8 or newer (3.12 recommended) and [uv](https://docs.astral.sh/uv/).
 
 ```bash
 git clone https://github.com/<your-username>/keo.git

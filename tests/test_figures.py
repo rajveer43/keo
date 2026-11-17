@@ -109,7 +109,8 @@ def test_wallclock_never_mixes_backends_on_one_axis(results, tmp_path):
 def test_parity_pairs_same_seed_and_budget(results, tmp_path):
     df = ResultStore(results).read_all()
     make_figures(df, tmp_path, "figtest", only=("parity",))
-    tw = pd.read_csv(tmp_path / "parity.csv")
+    # round_trip: pandas' default fast float parser can be 1 ulp off, which near-zero differences amplify past rtol
+    tw = pd.read_csv(tmp_path / "parity.csv", float_precision="round_trip")
     assert set(tw.algo) == {"lloyd", "emeans"}
     np.testing.assert_allclose(tw.diff_test_pct, 100 * (tw.test_mse - tw.test_mse_off) / tw.test_mse_off, rtol=1e-9)
     # NOTE: no agreement threshold here. On this n=2-3k toy the reference and official e-means differ by up to ~2 % on test

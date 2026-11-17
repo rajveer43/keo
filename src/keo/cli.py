@@ -1,10 +1,15 @@
 """`keo` command line. Phase 1 implements: download, verify, data-info, list-datasets.
 Other commands are stubs that name the phase that delivers them."""
 
-from __future__ import annotations
-
+# No `from __future__ import annotations` here on purpose: Typer reads the `Annotated[...]` options at runtime,
+# and on Python 3.8/3.9 string annotations lose that metadata (options silently fall back to defaults).
 import json
-from typing import Annotated
+from typing import Optional
+
+try:
+    from typing import Annotated
+except ImportError:  # Python 3.8
+    from typing_extensions import Annotated
 
 import typer
 
@@ -112,7 +117,7 @@ def data_info(dataset: str, as_json: Annotated[bool, typer.Option("--json")] = F
     typer.echo(f"split sizes      : train={s['train']} val={s['val']} test={s['test']}")
 
 
-def _run_and_report(config: str, out: str | None, retry_failed: bool, limit: int | None, dry_run: bool) -> int:
+def _run_and_report(config: str, out: Optional[str], retry_failed: bool, limit: Optional[int], dry_run: bool) -> int:
     from pathlib import Path
 
     from keo.bench.experiment import load_experiment_config
@@ -152,9 +157,9 @@ def _run_and_report(config: str, out: str | None, retry_failed: bool, limit: int
 @app.command()
 def run(
     config: str,
-    out: Annotated[str | None, typer.Option(help="Output directory (default results/<experiment name>).")] = None,
+    out: Annotated[Optional[str], typer.Option(help="Output directory (default results/<experiment name>).")] = None,
     retry_failed: Annotated[bool, typer.Option("--retry-failed", help="Re-run cells whose stored row is a failure.")] = False,
-    limit: Annotated[int | None, typer.Option(help="Stop after this many fit units (for trial runs).")] = None,
+    limit: Annotated[Optional[int], typer.Option(help="Stop after this many fit units (for trial runs).")] = None,
     dry_run: Annotated[bool, typer.Option("--dry-run", help="Print the plan (cells, skips) without running anything.")] = False,
 ) -> None:
     """Run an experiment grid. Resumable: stored cells are skipped."""
@@ -163,7 +168,7 @@ def run(
 
 @app.command()
 def smoke(
-    out: Annotated[str | None, typer.Option(help="Output directory (default results/smoke).")] = None,
+    out: Annotated[Optional[str], typer.Option(help="Output directory (default results/smoke).")] = None,
 ) -> None:
     """Tiny end-to-end run on a GloVe subset (CPU, < 5 min)."""
     raise typer.Exit(_run_and_report("smoke", out, False, None, False))
@@ -183,8 +188,8 @@ def status(experiment: str) -> None:
 def figures(
     experiment: str,
     theme: Annotated[str, typer.Option(help="light | dark | both")] = "light",
-    out: Annotated[str | None, typer.Option(help="Output directory (default results/<experiment>/figures).")] = None,
-    only: Annotated[str | None, typer.Option(help="Comma-separated figure names to render.")] = None,
+    out: Annotated[Optional[str], typer.Option(help="Output directory (default results/<experiment>/figures).")] = None,
+    only: Annotated[Optional[str], typer.Option(help="Comma-separated figure names to render.")] = None,
 ) -> None:
     """Render the standard figure set (PNG + CSV table twin) from an experiment's stored results."""
     from pathlib import Path

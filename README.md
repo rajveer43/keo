@@ -74,8 +74,10 @@ The dataset is downloaded automatically and verified using its SHA-256 checksum.
 
 ### Requirements
 
-- Python 3.10 or newer
-- Python 3.12 recommended for the development environment
+- Python 3.8 to 3.14 are supported (CI runs the tests on every one of them)
+- Python 3.12 is recommended for the development environment
+- Python 3.8 installs older library versions (for example numpy 1.24, scikit-learn 1.3, pandas 2.0), so numerical results may differ slightly in the last digits from newer Pythons. The provenance record stored with each run lists the library versions used.
+- The adapter for the official faiss E-means (`faiss.contrib.e_means`) needs faiss-cpu 1.16 or newer, which itself requires Python 3.10 or newer. On Python 3.8 and 3.9 that adapter reports itself as unavailable; the reference implementations and the faiss Lloyd adapter work as usual.
 
 Install KEO using pip:
 
