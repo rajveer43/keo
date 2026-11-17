@@ -9,6 +9,24 @@ description = "KEO: reproducible benchmark of K-means (Lloyd), E-means and O-mea
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
+authors = [{ name = "Rajveer Rathod" }]
+keywords = [
+  "clustering", "k-means", "kmeans", "e-means", "o-means", "benchmark",
+  "machine-learning", "vector-search", "faiss", "pytorch", "embeddings",
+  "reproducible-research", "unsupervised-learning", "glove",
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+  "Topic :: Scientific/Engineering :: Information Analysis",
+]
 dependencies = [
   "numpy>=1.26",
   "scipy>=1.11",
@@ -45,3 +63,10 @@ markers = [
   "data: needs the downloaded dataset files (skipped if absent)",
   "slow: long-running test",
 ]
+
+[project.urls]
+Homepage = "https://github.com/rajveer43/keo"
+Repository = "https://github.com/rajveer43/keo"
+Issues = "https://github.com/rajveer43/keo/issues"
+Changelog = "https://github.com/rajveer43/keo/blob/main/CHANGELOG.md"
+Citation = "https://doi.org/10.5281/zenodo.24273473"
