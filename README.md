@@ -309,6 +309,10 @@ keo/
 │       └── data/         # Download, verification, preparation
 ├── tests/                # Unit and phase-gate tests
 ├── results/              # Experiment outputs
+├── CONTRIBUTING.md
+├── CODE_OF_CONDUCT.md
+├── SECURITY.md
+├── CHANGELOG.md
 └── LICENSE
 ```
 
@@ -333,6 +337,12 @@ keo/
 - Lloyd (1982). *Least squares quantization in PCM.*
 - Arthur and Vassilvitskii (2007). *k-means++: The advantages of careful seeding.*
 - Sculley (2010). *Web-scale k-means clustering.*
+
+## Contributing
+
+Contributions are welcome, and you do not need to write code to help. Running the benchmark on a GPU, suggesting a dataset, or reviewing the o-means reconstruction are all useful. See [CONTRIBUTING.md](CONTRIBUTING.md) for how to set up, what a good pull request looks like, and the rules that keep the benchmark trustworthy. Please follow the [Code of Conduct](CODE_OF_CONDUCT.md). To report a security problem, see [SECURITY.md](SECURITY.md).
+
+If you use KEO in your work, please cite it using [CITATION.cff](CITATION.cff) or the DOI badge above.
 
 ## License
 

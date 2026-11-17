@@ -1,0 +1,54 @@
+name: Bug report
+description: Something does not work, or a result looks wrong
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What did you run, what did you expect, and what did you get?
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      description: The exact commands or config. A seed and a small subset make it easier to reproduce.
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: output
+    attributes:
+      label: Output or error message
+      render: text
+  - type: input
+    id: version
+    attributes:
+      label: KEO version
+      description: Run `pip show keo` or `keo --version`.
+    validations:
+      required: true
+  - type: input
+    id: env
+    attributes:
+      label: Python, OS and hardware
+      placeholder: "Python 3.12, macOS 15, Apple M4 (CPU)"
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - k-means
+        - e-means
+        - o-means
+        - Official-code adapter
+        - Data download or preparation
+        - Metrics
+        - Runner or result store
+        - Figures
+        - Packaging or install
+        - Docs
+        - Other

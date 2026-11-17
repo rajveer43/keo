@@ -1,0 +1,41 @@
+name: Benchmark result
+description: Share a run on hardware or settings we have not tested (a GPU, for example)
+labels: [results]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for running KEO. Please attach the results file rather than only typing numbers, so others can reproduce the figures from it.
+  - type: input
+    id: version
+    attributes:
+      label: KEO version
+    validations:
+      required: true
+  - type: textarea
+    id: hardware
+    attributes:
+      label: Hardware and software
+      description: CPU or GPU model, memory, OS, Python, torch and faiss versions.
+    validations:
+      required: true
+  - type: textarea
+    id: config
+    attributes:
+      label: Experiment config
+      description: The config name or YAML you ran, and the command.
+      render: yaml
+    validations:
+      required: true
+  - type: textarea
+    id: summary
+    attributes:
+      label: What did you observe?
+      description: Output of `keo status <name>`, and anything that differed from what the papers claim.
+    validations:
+      required: true
+  - type: textarea
+    id: files
+    attributes:
+      label: Results files
+      description: Drag and drop the results folder as a zip, or link to it.
