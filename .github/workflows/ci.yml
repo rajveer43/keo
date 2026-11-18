@@ -15,7 +15,7 @@ jobs:
     name: pytest (Python ${{ matrix.python-version }})
     steps:
       - uses: actions/checkout@v7
-      - uses: astral-sh/setup-uv@v5
+      - uses: astral-sh/setup-uv@v7
       - run: uv venv --python ${{ matrix.python-version }}
       # CPU-only torch: the default Linux wheel pulls several GB of CUDA libraries
       - run: uv pip install torch --index-url https://download.pytorch.org/whl/cpu
